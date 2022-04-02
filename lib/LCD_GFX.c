@@ -75,7 +75,46 @@ void LCD_drawChar(uint8_t x, uint8_t y, uint16_t character, uint16_t fColor, uin
 *****************************************************************************/
 void LCD_drawCircle(uint8_t x0, uint8_t y0, uint8_t radius,uint16_t color)
 {
-	// Fill this out
+	
+	
+	
+	int d = 1 - radius;
+	int p_x = 1;
+	int p = -2 * radius;
+	int x = 0;
+	int y = radius;
+
+	
+
+
+	while (x < y) {
+		if (d >= 0) {
+			y--;
+			p += 2;
+			d += p;
+		}
+		x++;
+		p_x += 2;
+		d += p_x;
+
+		LCD_drawPixel(x0 + x, y0 + y, color);
+		LCD_drawPixel(x0 - x, y0 + y, color);
+		LCD_drawPixel(x0 + x, y0 - y, color);
+		LCD_drawPixel(x0 - x, y0 - y, color);
+		LCD_drawPixel(x0 + y, y0 + x, color);
+		LCD_drawPixel(x0 - y, y0 + x, color);
+		LCD_drawPixel(x0 + y, y0 - x, color);
+		LCD_drawPixel(x0 - y, y0 - x, color);
+		LCD_drawPixel(x0, y0 + radius, color);
+		LCD_drawPixel(x0, y0 - radius, color);
+		LCD_drawPixel(x0 + radius, y0, color);
+		LCD_drawPixel(x0 - radius, y0, color);
+	
+	
+}
+	
+	
+
 }
 
 
@@ -86,7 +125,44 @@ void LCD_drawCircle(uint8_t x0, uint8_t y0, uint8_t radius,uint16_t color)
 *****************************************************************************/
 void LCD_drawLine(short x0,short y0,short x1,short y1,uint16_t c)
 {
-	// Fill this out
+	 
+	 int dy = 0;
+	 int dx = 0;
+	 int stepx= 0;
+	 int stepy = 0;
+	 
+	 dy = y1 - y0; //work out delta of x and y
+	 dx = x1 - x0;
+	 
+	 
+	 if (dy < 0) { dy = -dy;  stepy = -1; } else { stepy = 1; } // absolute value of each
+	 if (dx < 0) { dx = -dx;  stepx = -1; } else { stepx = 1; }
+	 dy <<= 1;                                              // dy is now 2*dy
+	 dx <<= 1;                                              // dx is now 2*dx
+	 LCD_drawPixel(x0, y0, c);
+	 if (dx > dy) {
+		 int fraction = dy - (dx >> 1);                     // same as 2*dy - dx
+		 while (x0 != x1) {
+			 if (fraction >= 0) {
+				 y0 += stepy;
+				 fraction -= dx;                            // same as fraction -= 2*dx
+			 }
+			 x0 += stepx;
+			 fraction += dy;                                // same as fraction -= 2*dy
+			 LCD_drawPixel(x0, y0, c);
+		 }
+		 } else {
+		 int fraction = dx - (dy >> 1);
+		 while (y0 != y1) {
+			 if (fraction >= 0) {
+				 x0 += stepx;
+				 fraction -= dy;
+			 }
+			 y0 += stepy;
+			 fraction += dx;
+			 LCD_drawPixel(x0, y0, c);
+		 }
+	 }
 }
 
 
@@ -96,9 +172,36 @@ void LCD_drawLine(short x0,short y0,short x1,short y1,uint16_t c)
 * @brief		Draw a colored block at coordinates
 * @note
 *****************************************************************************/
-void LCD_drawBlock(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1,uint16_t color)
+void LCD_drawBlock(uint8_t x, uint8_t y, uint8_t w, uint8_t h,uint16_t color,uint8_t f)
 {
-	// Fill this out
+
+	int x1 =x+w/2;
+	int x2 =x-w/2;
+	int y1 =y+h/2;
+	int y2 =y-h/2;
+	 
+	LCD_drawLine(x1, y1, x1, y2, color);
+	LCD_drawLine(x1, y1, x2, y1, color);
+	LCD_drawLine(x2, y2, x1, y2, color);
+	LCD_drawLine(x2, y2, x2, y1, color);
+	 
+
+if(f==1){
+	
+	while (x2 != x1){
+		
+	LCD_drawLine(x2, y2, x2, y1, color);	
+	x2++;
+		
+	}
+	
+	
+}
+
+
+
+
+
 }
 
 /**************************************************************************//**
@@ -108,7 +211,19 @@ void LCD_drawBlock(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1,uint16_t color
 *****************************************************************************/
 void LCD_setScreen(uint16_t color) 
 {
-	// Fill this out
+
+	int x = 0; 
+	int y = 0;
+	
+		      for (x = 0; x < 160; x++){
+				  
+		    LCD_drawLine(x,0, x, 127, color);
+		      
+			  
+			  }
+			  
+
+			  
 }
 
 /**************************************************************************//**
@@ -118,5 +233,8 @@ void LCD_setScreen(uint16_t color)
 *****************************************************************************/
 void LCD_drawString(uint8_t x, uint8_t y, char* str, uint16_t fg, uint16_t bg)
 {
-	// Fill this out
+	
+	
+	
+
 }
